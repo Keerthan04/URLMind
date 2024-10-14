@@ -2,6 +2,7 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { ArrowRight, BookOpen, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -38,13 +39,15 @@ export default function Home() {
           </SignedOut>
 
           <SignedIn>
+            <Link href='/chat'>
             <Button
               size="lg"
               className="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
-            >
+              >
               Ignite Knowledge
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
+            </Link>
           </SignedIn>
         </main>
 

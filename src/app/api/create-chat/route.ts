@@ -7,10 +7,10 @@ import { NextResponse } from "next/server";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(req: Request,res:Response) {
-    // const {userId} = await auth();
-    // if(!userId){
-    //     return NextResponse.json({message: 'Unauthorized'}, {status: 401});
-    // }
+    const {userId} = await auth();
+    if(!userId){
+        return NextResponse.json({message: 'Unauthorized'}, {status: 401});
+    }
     //now no need the auth so commenting it now
     try {
         const body = await req.json();
@@ -29,7 +29,7 @@ export async function POST(req: Request,res:Response) {
           .insert(chats)
           .values({
             chat_name: chat_name,
-            userId: "testing user_id",
+            userId: userId,
             namespace_name: namespace,
             //created at and id will be added by itself
           })

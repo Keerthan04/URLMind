@@ -15,6 +15,8 @@ export const chats = table("chats", {
   namespace_name: t.text("namespace_name").notNull(), //namespace of the pinecone to that chat
 });
 
+export type DrizzleChat = typeof chats.$inferSelect;
+
 //messages table to hold the messages with one to many relationship with the chats
 export const messages = table("messages", {
   // id: t.integer("message_id").notNull().primaryKey(),

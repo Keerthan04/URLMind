@@ -35,6 +35,7 @@ export async function POST(req:Request) {
         }
         const lastMessage = messages[messages.length - 1];
         const context = await getContext(lastMessage.content,_chats[0].namespace_name);
+        console.log("Context inside the route got is \n",context);
 
         const prompt = {
           role: "system",
@@ -63,7 +64,7 @@ export async function POST(req:Request) {
             prompt,
             ...messages.filter((message: Message) => message.role === "user"),
           ],
-          async onFinish() {
+          async onFinish({text}) {
             await db.insert(_messages).values({
               chatId: chatId,
               message_by: "user",
@@ -72,13 +73,17 @@ export async function POST(req:Request) {
             await db.insert(_messages).values({
               chatId: chatId,
               message_by: "system",
-              message_content: data.toString(),
+              message_content: text,
             })
             data.close();
           },
         });
         return result.toDataStreamResponse({ data });
     } catch (error) {
-        console.log("error in POST route of chat\n",error);
+        console.error("Error in POST route of chat\n", error);
+        return NextResponse.json(
+          { error: "Internal Server Error" },
+          { status: 500 }
+        );
     }
 }

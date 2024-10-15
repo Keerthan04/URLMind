@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Message } from "ai/react";
 import { Loader2 } from "lucide-react";
 import React from "react";
-
+import { marked } from "marked";
 type Props = {
   isLoading: boolean;
   messages: Message[];
@@ -24,8 +24,8 @@ const MessageList = ({ messages, isLoading }: Props) => {
           <div
             key={message.id}
             className={cn("flex", {
-              "justify-end pl-10": message.role === "user",
-              "justify-start pr-10": message.role === "assistant",
+              "justify-end pl-10 pb-5": message.role === "user",
+              "justify-start pr-10 pb-5": message.role === "system",
             })}
           >
             <div
@@ -36,7 +36,11 @@ const MessageList = ({ messages, isLoading }: Props) => {
                 }
               )}
             >
-              <p>{message.content}</p>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: marked(message.content), // Convert Markdown to HTML
+                }}
+              />
             </div>
           </div>
         );

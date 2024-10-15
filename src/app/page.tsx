@@ -1,4 +1,3 @@
-
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { ArrowRight, BookOpen, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,16 +6,19 @@ import { db } from "@/db";
 import { chats } from "@/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
+import NewChatDialog from "@/components/NewChatDialog";
 
 export default async function Home() {
   const { userId } = await auth();
   let firstChat;
-  if(userId){
-    firstChat = await db.select().from(chats).where(eq(chats.userId, userId));
-    if (firstChat) {
-      firstChat = firstChat[0];
-    }
+  if (userId) {
+    const userChats = await db
+      .select()
+      .from(chats)
+      .where(eq(chats.userId, userId));
+    firstChat = userChats[0];
   }
+
   return (
     <div className="w-screen min-h-screen bg-gradient-to-r from-violet-600 to-indigo-600 flex flex-col items-center justify-center p-4">
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-xl p-8">
@@ -51,15 +53,19 @@ export default async function Home() {
           </SignedOut>
 
           <SignedIn>
-            <Link href={`/chat/${firstChat?.id}`}>
-            <Button
-              size="lg"
-              className="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
-              >
-              Ignite Knowledge
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            </Link>
+            {firstChat ? (
+              <Link href={`/chat/${firstChat.id}`}>
+                <Button
+                  size="lg"
+                  className="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                  Ignite Knowledge
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            ) : (
+              <NewChatDialog />
+            )}
           </SignedIn>
         </main>
 

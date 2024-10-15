@@ -36,21 +36,23 @@ const ChatPage = async ({ params: { chatId } }: Props) => {
     <div className="flex h-screen overflow-hidden">
       <div className="flex w-full">
         {/* Chat sidebar */}
+        
         <div className="flex-[1] max-w-xs">
-          <ChatSideBar chats={_chats} chatId={currentChatId} />
+          <ChatSideBar chats={_chats} chatId={currentChatId}  />
         </div>
         {/* Chat component or empty state */}
-        <div className="flex-[3] border-l border-l-slate-200">
+        <div className="flex-[7] border-l border-l-slate-200">
           {currentChat ? (
             <ChatComponent chatId={currentChatId} />
           ) : (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500 text-lg">
-                {_chats.length === 0
-                  ? "No chats yet. Create a new chat to get started!"
-                  : "Select a chat or create a new one."}
-              </p>
-            </div>
+            redirect('/')
+            // <div className="flex items-center justify-center h-full">
+            //   <p className="text-gray-500 text-lg">
+            //     {_chats.length === 0
+            //       ? "No chats yet. Create a new chat to get started!"
+            //       : "Select a chat or create a new one."}
+            //   </p>
+            // </div>
           )}
         </div>
       </div>

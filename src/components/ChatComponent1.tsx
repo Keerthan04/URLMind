@@ -7,7 +7,8 @@ import { Send } from "lucide-react";
 import MessageList from "./MessageList";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Message } from "ai";
+// import { Message } from "ai";
+import { toast } from "sonner";
 
 type Props = { chatId: number };
 
@@ -15,14 +16,19 @@ const ChatComponent = ({ chatId }: Props) => {
   const { data, isLoading } = useQuery({
     queryKey: ["chat", chatId],
     queryFn: async () => {
-      const response = await axios.post<Message[]>("/api/get-messages", {
+      const response = await axios.post("/api/get-messages", {
         chatId,
       });
-      return response.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return response.data.map((message: { id: any; message_by: any; message_content: any; }) => ({
+        id: message.id,
+        role: message.message_by,
+        content: message.message_content,
+      }));
     },
   });
 
-  const { input, handleInputChange, handleSubmit, messages } = useChat({
+  const { input, handleInputChange, handleSubmit, messages,error } = useChat({
     api: "/api/chat",
     body: {
       chatId,
@@ -38,14 +44,18 @@ const ChatComponent = ({ chatId }: Props) => {
       });
     }
   }, [messages]);
+  React.useEffect(() => {
+    if (error) {
+      toast.error(
+        error.message || "An error occurred during the chat. Please try again."
+      );
+    }
+  }, [error]);
   return (
-    <div
-      className="relative max-h-screen overflow-scroll"
-      id="message-container"
-    >
+    <div className="relative max-h-screen overflow-auto" id="message-container">
       {/* header */}
       <div className="sticky top-0 inset-x-0 p-2 bg-white h-fit">
-        <h3 className="text-xl font-bold">Chat</h3>
+        <h3 className="text-xl font-bold">URL Insights Chat</h3>
       </div>
 
       {/* message list */}
@@ -59,7 +69,7 @@ const ChatComponent = ({ chatId }: Props) => {
           <Input
             value={input}
             onChange={handleInputChange}
-            placeholder="Ask any question..."
+            placeholder="Explore Your Created Knowledge Base..."
             className="w-full"
           />
           <Button className="bg-blue-600 ml-2">

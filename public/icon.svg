@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" fill="#F4F4F9"/>
+  <g transform="translate(20, 40)">
+    <!-- Left page -->
+    <path d="M10,10 L70,10 Q80,10 80,20 L80,140 Q80,150 70,150 L10,150 Q0,150 0,140 L0,20 Q0,10 10,10 Z" fill="#0077FF"/>
+    <!-- Right page -->
+    <path d="M90,10 L150,10 Q160,10 160,20 L160,140 Q160,150 150,150 L90,150 Q80,150 80,140 L80,20 Q80,10 90,10 Z" fill="#5D3FD3"/>
+    <!-- Book spine -->
+    <rect x="78" y="10" width="4" height="140" fill="#E0F7FA"/>
+    <!-- URL symbol -->
+    <path d="M40,60 Q55,45 70,60 M90,60 Q105,45 120,60" stroke="#FFFFFF" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <!-- Mind symbol (brain-like curves) -->
+    <path d="M40,100 Q55,85 70,100 Q85,115 100,100 Q115,85 130,100" stroke="#FFFFFF" stroke-width="6" fill="none" stroke-linecap="round"/>
+  </g>
+  <!-- Text -->
+  <text x="100" y="185" font-family="Arial, sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="bold">urlMind</text>
+</svg>

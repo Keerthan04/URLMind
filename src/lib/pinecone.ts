@@ -13,30 +13,37 @@ export const getPineconeClient = () =>{
 
 export async function insertIntoPineCone(urls: string[]) {
 
-    console.log("inside the insertIntoPinecone function calling scrape urls \n");
-    //1.scrape all the urls and get the info
-    const scraped_content = await scrape_urls(urls);
+    try {
+        console.log(
+            "inside the insertIntoPinecone function calling scrape urls \n"
+        );
+        //1.scrape all the urls and get the info
+        const scraped_content = await scrape_urls(urls);
 
-    console.log("scraped_content done calling prepare chunks now \n");
-    //2. split and segment the content
-    const documents = await prepareChunks(scraped_content) as Document[];
+        console.log("scraped_content done calling prepare chunks now \n");
+        //2. split and segment the content
+        const documents = (await prepareChunks(scraped_content)) as Document[];
 
-    console.log("documents got now embedding each \n");
-    //3.vectorize and embed individal documents
-    const vectors = await Promise.all(documents.flat().map(embedDocument));
-    console.log("vectors got now inserting into pinecone \n");
+        console.log("documents got now embedding each \n");
+        //3.vectorize and embed individal documents
+        const vectors = await Promise.all(documents.flat().map(embedDocument));
+        console.log("vectors got now inserting into pinecone \n");
 
-    //4. upload to pinecone
-    const client = await getPineconeClient();
-    const index = client.Index(process.env.PINECONE_INDEX!);
-    const unique_namespace = createNamespace();
-    const namespace = index.namespace(unique_namespace);
+        //4. upload to pinecone
+        const client = await getPineconeClient();
+        const index = client.Index(process.env.PINECONE_INDEX!);
+        const unique_namespace = createNamespace();
+        const namespace = index.namespace(unique_namespace);
 
-    console.log("inserting vectors into pinecone \n");
-    await namespace.upsert(vectors);
+        console.log("inserting vectors into pinecone \n");
+        await namespace.upsert(vectors);
 
-    console.log("done inserting vectors into pinecone \n");
-    return unique_namespace;
+        console.log("done inserting vectors into pinecone \n");
+        return unique_namespace;
+    } catch (error) {
+        console.log("error in insert into pinecone \n", error);
+        throw error
+    }
 }
 
 async function embedDocument(doc: Document){
@@ -67,7 +74,7 @@ async function prepareChunks(
     console.log("inside prepare chunks function \n");
     const pageContent = content.replace(/\n/g, "");
     const splitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 100,
+        chunkSize: 200,
         chunkOverlap: 20,
     });
 
